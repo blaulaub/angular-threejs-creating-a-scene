@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { PerspectiveCamera, Scene } from 'three';
+import { BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 
 
 @Component({
@@ -19,12 +19,28 @@ export class ViewComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.threeFrame.nativeElement.style.background = 'green';
-    this.threeFrame.nativeElement.style.height
+    //this.threeFrame.nativeElement.style.background = 'green';
 
     const scene = new Scene();
 
     const viewAspectRatio = 1.0;
     const camera = new PerspectiveCamera(75, viewAspectRatio, 0.1, 1000);
+
+    const renderer = new WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    this.threeFrame.nativeElement.appendChild(renderer.domElement);
+
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new Mesh(geometry, material);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
   }
 }
