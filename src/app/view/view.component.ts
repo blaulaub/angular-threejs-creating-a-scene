@@ -19,15 +19,13 @@ export class ViewComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    //this.threeFrame.nativeElement.style.background = 'green';
-
     const scene = new Scene();
 
     const viewAspectRatio = 1.0;
     const camera = new PerspectiveCamera(75, viewAspectRatio, 0.1, 1000);
 
     const renderer = new WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(300, 300);  // TODO: infer
     this.threeFrame.nativeElement.appendChild(renderer.domElement);
 
     const geometry = new BoxGeometry(1, 1, 1);
@@ -39,6 +37,8 @@ export class ViewComponent implements OnInit, AfterViewInit {
 
     function animate() {
       requestAnimationFrame(animate);
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
       renderer.render(scene, camera);
     }
     animate();
