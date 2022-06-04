@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+import { BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, PlaneGeometry, Scene, TextureLoader, WebGLRenderer } from 'three';
 
 
 @Component({
@@ -28,17 +28,21 @@ export class ViewComponent implements OnInit, AfterViewInit {
     renderer.setSize(300, 300);  // TODO: infer
     this.threeFrame.nativeElement.appendChild(renderer.domElement);
 
-    const geometry = new BoxGeometry(1, 1, 1);
-    const material = new MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new Mesh(geometry, material);
-    scene.add(cube);
+    // siehe https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml
+    const jpgUrl = 'https://wmts100.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/2056/23/509/204.jpeg';
 
-    camera.position.z = 5;
+    const geometry = new PlaneGeometry(256, 256);  // instead of BoxGeometry(1, 1, 1)
+    const material = new MeshBasicMaterial();
+    material.map = new TextureLoader().load(jpgUrl);
+    const tile = new Mesh(geometry, material);
+    scene.add(tile);
+
+    camera.position.z = 256;
 
     function animate() {
       requestAnimationFrame(animate);
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
+      tile.rotation.x += 0.01;
+      tile.rotation.y += 0.01;
       renderer.render(scene, camera);
     }
     animate();
